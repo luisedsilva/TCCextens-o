@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Verifica News",
+  "version": "1.0",
+  "description": "Verifique a veracidade das notícias usando o Google Fact Check e NewsAPI.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "script.js"
+  },
+  "action": {
+    "default_popup": "index.html"
+  },
+  "host_permissions": [
+    "https://newsapi.org/*",
+    "https://factchecktools.googleapis.com/*"
+  ]
+}
