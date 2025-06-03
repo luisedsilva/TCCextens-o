@@ -1,21 +1,22 @@
 document.addEventListener("DOMContentLoaded", function() {
   const API_KEY_FACTCHECK = 'AIzaSyAnqtM6KzOCT2a8E9qyXCfVEumpF1ALAUU';  
   const API_KEY_NEWDATA = 'pub_807679717e758effd1e413cfd122621021702';  
-
   const searchButton = document.getElementById("searchBtn");
   const queryInput = document.getElementById("query"); 
+  const resultsContainer = document.getElementById("results");
+  const historyContainer = document.getElementById("history-container");
 
+  displaySearchHistory();
   if (searchButton && queryInput) { 
     searchButton.addEventListener("click", async function() {
       const query = queryInput.value.trim(); 
-      const resultsContainer = document.getElementById("results");
       resultsContainer.innerHTML = '';
-
       if (!query) {
         alert("Digite um nome ou frase para pesquisa!");
         return;
       }
-
+      saveQueryToHistory(query);
+      displaySearchHistory();
       const columnsDiv = document.createElement('div');
       columnsDiv.className = 'columns';
       const falseNewsColumn = document.createElement('div');
@@ -35,6 +36,45 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   } else {
     console.error("Elemento de pesquisa ou botão não encontrado");
+  }
+
+  function saveQueryToHistory(query) {
+    if (!query) return;
+    let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    history = history.filter(item => item !== query);
+    history.unshift(query);
+    if (history.length > 5) history.pop();
+
+    localStorage.setItem('searchHistory', JSON.stringify(history));
+  }
+
+  function displaySearchHistory() {
+    if (!historyContainer) return;
+    const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    historyContainer.innerHTML = '';
+
+    if (history.length === 0) return;
+
+    const title = document.createElement('p');
+    title.textContent = 'Consultas recentes:';
+    title.style.fontWeight = 'bold';
+    title.style.marginBottom = '8px';
+    historyContainer.appendChild(title);
+    history.forEach(item => {
+      const historyItem = document.createElement('button');
+      historyItem.textContent = item;
+      historyItem.style.margin = '3px 6px 3px 0';
+      historyItem.style.cursor = 'pointer';
+      historyItem.style.border = '1px solid #ccc';
+      historyItem.style.borderRadius = '5px';
+      historyItem.style.backgroundColor = '#f0f0f0';
+      historyItem.style.padding = '5px 10px';
+      historyItem.addEventListener('click', () => {
+        queryInput.value = item;
+        searchButton.click();
+      });
+      historyContainer.appendChild(historyItem);
+    });
   }
 
   async function fetchFactCheck(query) {
@@ -74,9 +114,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (factChecks.length > 0) {
       factChecks.forEach(claim => {
         const claimReview = claim.claimReview?.[0];
-        const reviewDate = claimReview?.reviewDate
-            ? new Date(claimReview.reviewDate).toLocaleString('pt-BR')
-            : 'Data não disponível';
         const textualRating = claimReview?.textualRating || 'Sem veredito';
         const verdict = textualRating.toLowerCase().includes('false') ? 'FALSO' :
                         textualRating.toLowerCase().includes('true') ? 'VERDADEIRO' :
@@ -88,7 +125,6 @@ document.addEventListener("DOMContentLoaded", function() {
             <h3>${claim.text}</h3>
             <p><strong>Fonte:</strong> ${claim.claimant || 'Desconhecido'}</p>
             <p><strong>Status:</strong> <span style="color:${verdict === 'FALSO' ? 'red' : 'green'}">${verdict}</span></p>
-            <p><strong>Data da verificação:</strong> ${reviewDate}</p>
             <div class="meta">
               <a href="${claimReview?.url}" target="_blank">Verificar fonte</a>
             </div>
@@ -112,11 +148,9 @@ document.addEventListener("DOMContentLoaded", function() {
       news.forEach(article => {
         const newsItem = document.createElement('div');
         newsItem.className = 'result true-news';
-        const firstParagraph = article.content ? article.content.split('\n')[0] : 'Sem descrição disponível';
         newsItem.innerHTML = `
           <div class="content">
             <h3>${article.title}</h3>
-            <p>${firstParagraph}</p>
             <div class="meta">
               <a href="${article.link}" target="_blank">Leia mais</a>
             </div>

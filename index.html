@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verifica News</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div id="popup-container">
-    <h1>Verificador de Notícias</h1>
-    <div>
-      <input type="text" id="query" placeholder="Digite sua pesquisa">
-<button id="searchBtn">Buscar</button>
-<div id="results"></div>
-      <div class="columns">
-        <div id="false-news-column">
-        </div>
-        <div id="true-news-column">
-        </div>
-      </div>
+  <main class="container">
+    <h1>📰 Verificador de Notícias</h1>
+    <div class="search-box">
+      <input type="text" id="query" placeholder="Digite uma frase ou nome para verificar..." />
+      <div id="history-container"></div>
+      <button id="searchBtn">Buscar</button>
     </div>
+    <div id="results" class="results-area">
+      <section id="false-news-column" class="news-column"></section>
+      <section id="true-news-column" class="news-column"></section>
     </div>
-  </div>
-  <script src="script.js"></script>  
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -5,16 +5,23 @@
   "description": "Verifique a veracidade das notícias usando o Google Fact Check e NewsAPI.",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
+  "host_permissions": [
+    "https://newsdata.io/*",
+    "https://factchecktools.googleapis.com/*"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "128": "img/LogoP.png"
+    }
+  },
+  "icons": {
+    "128": "img/LogoP.png"
+  },
   "background": {
     "service_worker": "script.js"
-  },
-  "action": {
-    "default_popup": "index.html"
-  },
-  "host_permissions": [
-    "https://newsapi.org/*",
-    "https://factchecktools.googleapis.com/*"
-  ]
+  }
 }
