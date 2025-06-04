@@ -20,8 +20,5 @@
   },
   "icons": {
     "128": "img/LogoP.png"
-  },
-  "background": {
-    "service_worker": "script.js"
   }
 }
