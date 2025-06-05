@@ -4,9 +4,8 @@
   "version": "1.0",
   "description": "Verifique a veracidade das notícias usando o Google Fact Check e NewsAPI.",
   "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
+    "storage"
+
   ],
   "host_permissions": [
     "https://newsdata.io/*",
