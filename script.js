@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const API_KEY_FACTCHECK = 'AIzaSyAnqtM6KzOCT2a8E9qyXCfVEumpF1ALAUU';  
-  const API_KEY_NEWDATA = 'pub_807679717e758effd1e413cfd122621021702';  
   const searchButton = document.getElementById("searchBtn");
   const queryInput = document.getElementById("query"); 
   const resultsContainer = document.getElementById("results");
@@ -77,25 +75,31 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  async function fetchFactCheck(query) {
-    const url = `https://factchecktools.googleapis.com/v1alpha1/claims:search?query=${encodeURIComponent(query)}&key=${API_KEY_FACTCHECK}`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data.claims ? data.claims.slice(0, 5) : [];
-    } catch (error) {
-      console.error("Erro ao buscar informações de verificação:", error);
-      return [];
-    }
+ async function fetchFactCheck(query) {
+  try {
+    const response = await fetch('https://backendtcc-5dwx.onrender.com/api/factcheck', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+    });
+    const data = await response.json();
+    return data.claims ? data.claims.slice(0, 5) : [];
+  } catch (error) {
+    console.error("Erro ao buscar informações de verificação:", error);
+    return [];
   }
+}
 
   async function fetchNews(query) {
-    const url = `https://newsdata.io/api/1/news?apikey=${API_KEY_NEWDATA}&q=${encodeURIComponent(query)}&country=br`;
     try {
-      const response = await fetch(url);
+      const response = await fetch('https://backendtcc-5dwx.onrender.com/api/newsdata', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
       const data = await response.json();
       if (data.status === 'success' && data.results && data.results.length > 0) {
-        return data.results.slice(0, 5); 
+        return data.results.slice(0, 5);
       } else {
         console.error("Erro na resposta da NewsData:", data);
         return [];
@@ -106,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // As funções displayFactCheckResults e displayNewsResults permanecem iguais
   function displayFactCheckResults(factChecks) {
     const falseNewsColumn = document.getElementById('false-news-column');
     const title = document.createElement('h2');
